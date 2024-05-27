@@ -7,7 +7,7 @@ url = 'https://345673.xyz'
 
 # Telegram 机器人 API 配置
 telegram_api_token = 'your_api_token'
-telegram_chat_id = 'your_chat_id'  # 用你的实际 Chat ID 替换
+telegram_chat_id = 'your_chat_id'  # 用你的Chat ID，不是机器人的Chat ID
 
 # Cloudflare 信息
 api_key = "your_api_key"
