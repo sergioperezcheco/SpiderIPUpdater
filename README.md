@@ -46,7 +46,7 @@ crontab -e
 # */2：每两小时执行一次。
 # *：分别代表每一天、每一个月以及每一个星期。
 # /usr/bin/python3：Python 3的实际路径。
-# /SpiderIPUpdater/345673.py：你的Python脚本的**绝对路径**。
+# /SpiderIPUpdater/345673.py：你的Python脚本的 **绝对路径** 。
 ```
 3.保存并退出（类似vim）
 
