@@ -2,6 +2,11 @@
 一款优选IP工具，集爬虫、CF解析、tg通知一条龙，可以部署在vps上定时优选IP
 
 ## 使用教程
+0.下载脚本
+```
+git clone https://github.com/sergioperezcheco/SpiderIPUpdater.git
+cd SpiderIPUpdater
+```
 1.安装requests与bs4
 ```
 pip install requests beautifulsoup4
