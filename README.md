@@ -28,3 +28,11 @@ email = "your_email"
 zone_id = "your_zone_id"
 domain = "your_domain"  # 确保这是完整的域名（如cf.111111.xyz）
 ```
+
+3.运行脚本
+```
+python 具体脚本名.py
+```
+
+
+
