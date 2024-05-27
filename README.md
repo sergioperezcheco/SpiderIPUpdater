@@ -33,6 +33,10 @@ domain = "your_domain"  # 确保这是完整的域名（如cf.111111.xyz）
 ```
 python3 345673.py
 ```
+或
+```
+python3 ipdb.py
+```
 
 ## 定时任务（推荐）
 1.打卡crontab编辑器
