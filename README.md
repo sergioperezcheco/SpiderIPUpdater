@@ -49,6 +49,7 @@ crontab -e
 # /SpiderIPUpdater/345673.py：你的Python脚本的**绝对路径**。
 ```
 3.保存并退出（类似vim）
+
 4.赋予权限
 ```
 chmod +x SpiderIPUpdater/345673.py
