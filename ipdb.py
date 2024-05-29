@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 import requests
+import socket
+from sys import exit
 
 # 目标URL，感谢IPDB项目
 url = 'https://ipdb.api.030101.xyz/?type=bestproxy'
@@ -13,6 +15,7 @@ api_key = "your_api_key"
 email = "your_email"
 zone_id = "your_zone_id"
 domain = "your_domain"  # 确保这是完整的域名（如cf.111111.xyz）
+ports = [80,443]  # 添加端口变量，如 ports = [80,443] 代表80和443都通
 
 # 添加请求头
 headers = {
@@ -23,18 +26,15 @@ headers = {
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8'
 }
 
-# 网页上只有IP可以通过这种方式获取IP
-try:
-    # 发起请求获取网页内容
-    response = requests.get(url)
-    response.raise_for_status()  # 如果响应状态码不是200，抛出HTTPError
-    ip_addresses = response.text.split('\n')  # 将每行的IP地址分割为一个列表
-except requests.exceptions.RequestException as e:
-    print(f"HTTP请求失败: {e}")
-    exit()  # 请求失败时，退出程序
-
-# 删除旧的 A 记录并统计删除的数量
-deleted_count = 0
+def check_ports(ip, ports):
+    for port in ports:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.settimeout(10)  # 设置超时时间
+        result = sock.connect_ex((ip, port))
+        sock.close()
+        if result != 0:
+            return False
+    return True
 
 def delete_old_a_records():
     global deleted_count
@@ -62,8 +62,6 @@ def delete_old_a_records():
     except requests.exceptions.RequestException as e:
         print(f"HTTP请求失败: {e}")
 
-
-# 增加新的 A 记录
 def add_a_record(ip):
     url = f"https://api.cloudflare.com/client/v4/zones/{zone_id}/dns_records"
 
@@ -93,8 +91,6 @@ def add_a_record(ip):
     except requests.exceptions.RequestException as e:
         print(f"HTTP请求失败: {e}")
 
-
-# 发送 Telegram 消息
 def send_telegram_message(text):
     telegram_url = f"https://api.telegram.org/bot{telegram_api_token}/sendMessage"
     payload = {
@@ -108,17 +104,39 @@ def send_telegram_message(text):
     except requests.exceptions.RequestException as e:
         print(f"Telegram消息发送失败: {e}")
 
+# 获取IP地址并检查端口
+try:
+    response = requests.get(url)
+    response.raise_for_status()
+    ip_addresses = response.text.split('\n')
+except requests.exceptions.RequestException as e:
+    print(f"HTTP请求失败: {e}")
+    exit()
+
+# 检查所有IP+端口的可达性
+valid_ips = []
+for ip in ip_addresses:
+    if check_ports(ip, ports):
+        print(f"在 {ip} 上所有端口都可访问")
+        valid_ips.append(ip)
+    else:
+        print(f"在 {ip} 上某些端口不可访问")
+
+# 如果没有可用的IP，退出程序
+if not valid_ips:
+    print("没有可用的IP，退出程序")
+    exit()
 
 # 删除旧的子域名A记录
+deleted_count = 0
 delete_old_a_records()
 
-# 输出所有移动的IP地址并为每个IP添加A记录
-for ip in ip_addresses:
-    print(ip)
+# 为每个可用的IP添加A记录
+for ip in valid_ips:
     add_a_record(ip)
 
 # 输出总共找到的IP地址数量
-total_ips = len(ip_addresses)
+total_ips = len(valid_ips)
 print("Total IP Addresses Found:", total_ips)
 
 # 发送Telegram提醒消息
