@@ -31,6 +31,7 @@ api_key = "your_api_key"
 email = "your_email"
 zone_id = "your_zone_id"
 domain = "your_domain"  # 确保这是完整的域名（如cf.111111.xyz）
+ports = [80,443]  # 添加端口变量，如 ports = [80,443] 代表80和443都通，必须使用英文逗号，在部分脚本中有该变量
 ```
 
 3.运行脚本
